@@ -1,22 +1,16 @@
 let humanScore = 0;
 let computerScore = 0;
+let rounds = 0;
 
 function getComputerChoice() {
   return ["rock", "paper", "scissors"][Math.floor(Math.random() * 3)];
-}
-
-function getHumanChoice() {
-  let choice = "";
-  while (["rock", "paper", "scissors"].indexOf(String(choice).toLocaleLowerCase()) === -1)
-    choice = prompt("Choose between rock, paper and scissors.");
-  return choice;
 }
 
 function playRound(humanChoice, computerChoice) {
   let currentComputerScore = computerScore;
   let currentHumanScore = humanScore;
   humanChoice = String(humanChoice).toLocaleLowerCase();
-
+  
   if (humanChoice === computerChoice) {
     computerScore++;
     humanScore ++;
@@ -34,30 +28,60 @@ function playRound(humanChoice, computerChoice) {
     if (computerChoice === "paper") humanScore++;
   }
 
+  const el = document.createElement("div");
+  
   if (currentHumanScore < humanScore && currentComputerScore < computerScore) {
-    console.log("Tied!");
+    el.textContent = "Tied!";
   } else {
     if (currentHumanScore < humanScore)
-      console.log(
+      el.textContent =
         "You win! " +
-        String(humanChoice).charAt(0).toUpperCase() + String(humanChoice).slice(1).toLocaleLowerCase() +
+        String(humanChoice).charAt(0).toUpperCase() +
+        String(humanChoice).slice(1).toLocaleLowerCase() +
         " beats " +
-        String(computerChoice).charAt(0).toUpperCase() + String(computerChoice).slice(1).toLocaleLowerCase()
-      );
+        String(computerChoice).charAt(0).toUpperCase() +
+        String(computerChoice).slice(1).toLocaleLowerCase();
     if (currentComputerScore < computerScore)
-      console.log(
+      el.textContent =
         "You lose! " +
-        String(computerChoice).charAt(0).toUpperCase() + String(computerChoice).slice(1).toLocaleLowerCase() +
+        String(computerChoice).charAt(0).toUpperCase() +
+        String(computerChoice).slice(1).toLocaleLowerCase() +
         " beats " +
-        String(humanChoice).charAt(0).toUpperCase() + String(humanChoice).slice(1).toLocaleLowerCase()
-      );
+        String(humanChoice).charAt(0).toUpperCase() +
+        String(humanChoice).slice(1).toLocaleLowerCase();
+  }
+  rounds++;
+
+  document.querySelector("#results").appendChild(el);
+  if (rounds === 5) {
+    const elWinner = document.createElement("div");
+    if (humanScore > computerScore) {
+      elWinner.textContent =
+        `Winner: You!`;
+    } else if (humanScore < computerScore) {
+      elWinner.textContent =
+        `Winner: Computer!`;
+    } else {
+      elWinner.textContent =
+      `Winner: Tied!`;
+    }
+    document.querySelector("#results").appendChild(elWinner);
+    rounds = 0;
   }
 }
 
-function playGame() {
-  for (let i = 0; i <= 4; i++) {
-    playRound(getHumanChoice(), getComputerChoice());
-  }
-  console.log(`Computer: ${computerScore} x You: ${humanScore}`);
+function playerSelection(selection) {
+  playRound(selection, getComputerChoice());
 }
-playGame();
+
+document.querySelector("#rock").addEventListener("click", (e) => {
+  playerSelection("rock");
+});
+
+document.querySelector("#paper").addEventListener("click", (e) => {
+  playerSelection("paper");
+});
+
+document.querySelector("#scissors").addEventListener("click", (e) => {
+  playerSelection("scissors");
+});
